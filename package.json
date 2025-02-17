@@ -1,6 +1,6 @@
 {
   "name": "cros-capture",
-  "description": "Cross-platform library for capturing screenshots programmatically with Node.js.",
+  "description": "Capture screenshots programmatically. Cross-platform, with support for MacOS (Darwin), Windows, and Linux.",
   "version": "0.0.1",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -12,9 +12,15 @@
     "test": "ts-mocha -r esbuild-register 'test/**/*.ts'",
     "tsup": "npx tsup"
   },
-  ".": {
-    "import": "./dist/index.mjs",
-    "require": "./dist/index.js"
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./*": {
+      "import": "./dist/src/*.mjs",
+      "require": "./dist/src/*.js"
+    }
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
