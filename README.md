@@ -2,7 +2,7 @@
 
 > Capture screenshots programmatically. Cross-platform, with support for MacOS (Darwin), Windows, and Linux.
 
-Please consider following this project's author, [undefined](https://github.com/jonschlinkert), and consider starring the project to show your :heart: and support.
+Please consider following this project's author, [Jon Schlinkert](https://github.com/jonschlinkert), and consider starring the project to show your :heart: and support.
 
 ## Install
 
@@ -294,7 +294,7 @@ $ npm install -g verbose/verb#dev verb-generate-readme && verb
 
 ### Author
 
-***
+**Jon Schlinkert**
 
 * [GitHub Profile](https://github.com/jonschlinkert)
 * [Twitter Profile](https://twitter.com/jonschlinkert)
@@ -302,7 +302,7 @@ $ npm install -g verbose/verb#dev verb-generate-readme && verb
 
 ### License
 
-Copyright © 2025, .
+Copyright © 2025, [Jon Schlinkert](https://github.com/jonschlinkert).
 Released under the MIT License.
 
 ***

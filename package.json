@@ -3,6 +3,10 @@
   "description": "Capture screenshots programmatically. Cross-platform, with support for MacOS (Darwin), Windows, and Linux.",
   "version": "0.0.1",
   "homepage": "https://github.com/jonschlinkert/cross-capture",
+  "author": {
+    "name": "Jon Schlinkert",
+    "url": "https://github.com/jonschlinkert"
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "files": [
