@@ -1,16 +1,18 @@
 {
-  "name": "cros-capture",
+  "name": "cross-capture",
   "description": "Capture screenshots programmatically. Cross-platform, with support for MacOS (Darwin), Windows, and Linux.",
   "version": "0.0.1",
+  "homepage": "https://github.com/jonschlinkert/cross-capture",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "files": [
     "dist"
   ],
   "scripts": {
+    "clean": "rm -rf dist",
     "eslint": "npx eslint --ext .ts .",
-    "test": "ts-mocha -r esbuild-register 'test/**/*.ts'",
-    "tsup": "npx tsup"
+    "test": "ts-mocha -r esbuild-register 'test/**/*.test.ts' --exit",
+    "tsup": "npm run clean && npx tsup"
   },
   "exports": {
     ".": {
@@ -28,11 +30,33 @@
     "@typescript-eslint/parser": "^8.12.2",
     "esbuild-register": "^3.5.0",
     "eslint": "^8.57.0",
+    "gulp-format-md": "^2.0.0",
     "prettier": "^3.3.3",
     "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "tsup": "^8.1.0",
     "typescript": "^5.5.3"
+  },
+  "verb": {
+    "toc": false,
+    "layout": "default",
+    "tasks": [
+      "readme"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ],
+    "reflinks": [
+      "verb"
+    ],
+    "related": [
+      "enquirer",
+      "list-displays",
+      "window-size"
+    ],
+    "lint": {
+      "reflinks": true
+    }
   }
 }

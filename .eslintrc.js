@@ -15,6 +15,10 @@ module.exports = {
     node: true
   },
 
+  globals: {
+    NodeJS: 'readonly'
+  },
+
   plugins: ['@typescript-eslint'],
   parser: '@typescript-eslint/parser',
   parserOptions: {

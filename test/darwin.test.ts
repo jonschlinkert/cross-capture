@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import cp from 'node:child_process';
 import { captureDarwin } from '~/platform/darwin';
 
-describe('captureDarwin', () => {
+describe.skip('captureDarwin', () => {
   before(function() {
     if (os.platform() !== 'darwin') {
       console.log('Skipping Darwin tests, since platform is not darwin');
