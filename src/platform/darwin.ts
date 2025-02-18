@@ -5,7 +5,7 @@ import { createOptions, createResponse } from '~/helpers';
 
 export const captureDarwin = async (options: CaptureOptions = {}): Promise<any> => {
   const { tempFile, config } = createOptions(options);
-  const { clipboard, cursor, delay, interactive, region = {}, retina, window } = config;
+  const { cursor, interactive, region = {}, retina, window } = config;
   const { x, y, width, height } = region;
 
   return new Promise((resolve, reject) => {
@@ -15,14 +15,28 @@ export const captureDarwin = async (options: CaptureOptions = {}): Promise<any> 
       args.push('-w');
     } else if (window?.title || window?.id) {
       args.push('-l');
+
       cp.execSync('screencapture -L')
         .toString()
         .split('\n')
         .find(line => {
-          if (line.includes(window?.title || '')) {
-            args.push(line.split(':')[0]);
+          const parts = line.split(':');
+          const id = parts[0]?.trim();
+
+          if (!id) {
+            return false;
+          }
+
+          if (window.id && id === window.id) {
+            args.push(id);
             return true;
           }
+
+          if (window.title && line.includes(window.title)) {
+            args.push(id);
+            return true;
+          }
+
           return false;
         });
 
@@ -31,25 +45,18 @@ export const captureDarwin = async (options: CaptureOptions = {}): Promise<any> 
     }
 
     if (cursor) args.push('-C');
-    if (delay) args.push('-T', delay.toString());
     if (retina === false) args.push('-R');
-    if (clipboard) args.push('-c');
 
     if (region?.width && region?.height) {
       args.push('-R', `${x},${y},${width},${height}`);
     }
 
-    if (!clipboard) {
-      args.push(tempFile);
-    }
+    args.push(tempFile);
 
     const proc = cp.spawn('screencapture', args);
 
     proc.on('close', code => {
-      // We're not throwing an error here so that the "capture"
-      // function or the implementor can handle it
       resolve(createResponse({
-        clipboard,
         code,
         command: 'screencapture',
         options: config,

@@ -5,7 +5,7 @@ import { createResponse, createOptions } from '~/helpers';
 
 export const captureWindows = async (options: CaptureOptions = {}): Promise<any> => {
   const { tempFile, config } = createOptions(options);
-  const { clipboard, cursor, delay, format, region, window } = config;
+  const { cursor, format, region, window } = config;
   const { x, y, width, height } = region;
 
   return new Promise((resolve, reject) => {
@@ -27,7 +27,7 @@ export const captureWindows = async (options: CaptureOptions = {}): Promise<any>
         $window = [Window]::FindWindow($null, "${window.title}")
         if ($window) {
           [Window]::SetForegroundWindow($window)
-          Start-Sleep -Milliseconds ${delay || 200}
+          Start-Sleep -Milliseconds 200
 
           $rect = New-Object Window+RECT
           [void][Window]::GetWindowRect($window, [ref]$rect)
@@ -42,7 +42,7 @@ export const captureWindows = async (options: CaptureOptions = {}): Promise<any>
           $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
           $graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
 
-          ${clipboard ? '$bitmap.SetToClipboard()' : `$bitmap.Save('${tempFile}', [System.Drawing.Imaging.ImageFormat]::${format === 'jpg' ? 'Jpeg' : 'Png'})`}
+          $bitmap.Save('${tempFile}', [System.Drawing.Imaging.ImageFormat]::${format === 'jpg' ? 'Jpeg' : 'Png'})
         }
       `;
     } else if (region) {
@@ -62,7 +62,7 @@ export const captureWindows = async (options: CaptureOptions = {}): Promise<any>
           $graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
         }
 
-        ${clipboard ? '$bitmap.SetToClipboard()' : `$bitmap.Save('${tempFile}', [System.Drawing.Imaging.ImageFormat]::${format === 'jpg' ? 'Jpeg' : 'Png'})`}
+        $bitmap.Save('${tempFile}', [System.Drawing.Imaging.ImageFormat]::${format === 'jpg' ? 'Jpeg' : 'Png'})
       `;
     } else {
       script = `
@@ -108,24 +108,17 @@ export const captureWindows = async (options: CaptureOptions = {}): Promise<any>
             $graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
           }
 
-          ${clipboard ? '$bitmap.SetToClipboard()' : `$bitmap.Save('${tempFile}', [System.Drawing.Imaging.ImageFormat]::${format === 'jpg' ? 'Jpeg' : 'Png'})`}
+          $bitmap.Save('${tempFile}', [System.Drawing.Imaging.ImageFormat]::${format === 'jpg' ? 'Jpeg' : 'Png'})
         })
 
         $form.ShowDialog()
       `;
     }
 
-    if (delay) {
-      script = `Start-Sleep -Seconds ${delay}; ${script}`;
-    }
-
     const proc = cp.spawn('powershell', ['-command', script]);
 
     proc.on('close', code => {
-      // We're not throwing an error here so that the "capture"
-      // function or the implementor can handle it
       resolve(createResponse({
-        clipboard,
         code,
         command: 'PowerShell screenshot',
         options: config,

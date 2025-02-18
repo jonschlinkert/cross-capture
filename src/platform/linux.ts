@@ -5,7 +5,7 @@ import { createOptions, createResponse } from '~/helpers';
 
 export const captureLinux = async (options: CaptureOptions = {}): Promise<any> => {
   const { tempFile, config } = createOptions(options);
-  const { clipboard, cursor, delay, format, region, window } = config;
+  const { cursor, region, window } = config;
   const { x, y, width, height } = region;
 
   return new Promise((resolve, reject) => {
@@ -17,7 +17,7 @@ export const captureLinux = async (options: CaptureOptions = {}): Promise<any> =
         command = `
           WINDOW_ID=$(swaymsg -t get_tree | jq -r '..|select(.name?"${window.title}")?.rect | select(.x) | "\\(.x),\\(.y) \\(.width)x\\(.height)"' | head -1)
           if [ ! -z "$WINDOW_ID" ]; then
-            grim ${cursor ? '' : '-c'} -g "$WINDOW_ID" ${clipboard ? '-' : `"${tempFile}"`}
+            grim ${cursor ? '' : '-c'} -g "$WINDOW_ID" "${tempFile}"
           else
             exit 1
           fi
@@ -26,9 +26,8 @@ export const captureLinux = async (options: CaptureOptions = {}): Promise<any> =
         command = `
           WINDOW_ID=$(xdotool search --name "${window.title}" | head -1)
           if [ ! -z "$WINDOW_ID" ]; then
-            ${delay ? `sleep ${delay};` : ''}
             xdotool windowactivate $WINDOW_ID
-            maim ${cursor ? '-u' : ''} -i $WINDOW_ID ${clipboard ? '-' : `"${tempFile}"`}
+            maim ${cursor ? '-u' : ''} -i $WINDOW_ID "${tempFile}"
           else
             exit 1
           fi
@@ -36,31 +35,20 @@ export const captureLinux = async (options: CaptureOptions = {}): Promise<any> =
       }
     } else if (region) {
       if (isWayland) {
-        command = `grim ${cursor ? '' : '-c'} -g "${x},${y} ${width}x${height}" ${clipboard ? '-' : `"${tempFile}"`}`;
+        command = `grim ${cursor ? '' : '-c'} -g "${x},${y} ${width}x${height}" "${tempFile}"`;
       } else {
-        command = `maim ${cursor ? '-u' : ''} -g "${width}x${height}+${x}+${y}" ${clipboard ? '-' : `"${tempFile}"`}`;
+        command = `maim ${cursor ? '-u' : ''} -g "${width}x${height}+${x}+${y}" "${tempFile}"`;
       }
     } else if (isWayland) {
-      command = `grim ${cursor ? '' : '-c'} -g "$(slurp)" ${clipboard ? '-' : `"${tempFile}"`}`;
+      command = `grim ${cursor ? '' : '-c'} -g "$(slurp)" "${tempFile}"`;
     } else {
-      command = `maim ${cursor ? '-u' : ''} -s ${clipboard ? '-' : `"${tempFile}"`}`;
-    }
-
-    if (clipboard) {
-      command += ` | xclip -selection clipboard -t image/${format || 'png'} -i`;
-    }
-
-    if (delay) {
-      command = `sleep ${delay} && ${command}`;
+      command = `maim ${cursor ? '-u' : ''} -s "${tempFile}"`;
     }
 
     const proc = cp.spawn('sh', ['-c', command]);
 
     proc.on('close', code => {
-      // We're not throwing an error here so that the "capture"
-      // function or the implementor can handle it
       resolve(createResponse({
-        clipboard,
         code,
         command: 'Screenshot capture',
         options: config,

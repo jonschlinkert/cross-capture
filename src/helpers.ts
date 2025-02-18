@@ -4,19 +4,13 @@ import os from 'node:os';
 import path from 'node:path';
 
 export const createOptions = (options: CaptureOptions): CaptureOptions => {
-  const tmpdir = options.tempFile
-    ? path.dirname(options.tempFile)
-    : os.platform() === 'win32'
-      ? process.env.TEMP
-      : fs.existsSync('/tmp')
-        ? '/tmp'
-        : os.tmpdir();
-
+  const tmpdir = options.tempFile ? path.dirname(options.tempFile) : os.tmpdir();
   const filename = `screenshot_${Date.now()}.${options.format || 'png'}`;
   const tempFile = options.tempFile || path.join(tmpdir, filename);
+
   const config = {
     ...options,
-    interactive: options.interactive ?? (!options.region && !options.window),
+    interactive: options.interactive ?? false,
     quality: Math.max(0, Math.min(100, options.quality || 100))
   };
 
@@ -34,9 +28,15 @@ export const createResponse = ({
   tempFile: string;
   options: CaptureOptions;
 }): CaptureOptions => {
-  if (code === 0) {
+
+  if (code === 0 && fs.existsSync(tempFile)) {
     return { type: 'data', data: toBase64(tempFile, options) };
   }
+
+  if (code === 0 && !fs.existsSync(tempFile)) {
+    return { type: 'canceled' };
+  }
+
   return {
     type: 'error',
     error: new Error(`${command} failed` + (code ? ` with code ${code}` : ''))
