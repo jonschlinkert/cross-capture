@@ -1,7 +1,7 @@
 {
   "name": "cross-capture",
   "description": "Capture screenshots programmatically. Cross-platform, with support for MacOS (Darwin), Windows, and Linux.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/jonschlinkert/cross-capture",
   "author": {
     "name": "Jon Schlinkert",
@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "clean": "rm -rf dist",
+    "docs": "verb",
     "eslint": "npx eslint --ext .ts .",
     "test": "ts-mocha -r esbuild-register 'test/**/*.test.ts' --exit",
     "tsup": "npm run clean && npx tsup"

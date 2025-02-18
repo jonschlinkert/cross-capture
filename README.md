@@ -45,7 +45,7 @@ capture({
 Take a screenshot with the specified options. Returns a Promise that resolves to a base64-encoded image or an error object.
 
 ```js
-const { capture } = require('screenshot-utils');
+import { capture } from 'cross-capture';
 
 // Take a full screen screenshot
 const result = await capture();
@@ -62,7 +62,7 @@ const region = await capture({
 macOS-specific screenshot function using the `screencapture` command. Supports window capture by ID or title and includes interactive window selection.
 
 ```js
-const { captureDarwin } = require('screenshot-utils');
+import { captureDarwin } from 'cross-capture';
 
 // Capture active window with cursor
 const screenshot = await captureDarwin({
@@ -89,7 +89,7 @@ Linux-specific screenshot function that automatically detects and uses the appro
 * X11: Uses `maim` for capture and `xdotool` for window management
 
 ```js
-const { captureLinux } = require('screenshot-utils');
+import { captureLinux } from 'cross-capture';
 
 // Capture window by title
 const browser = await captureLinux({
@@ -116,7 +116,7 @@ const selected = await captureLinux();
 Windows-specific screenshot function using PowerShell and Windows Forms. Interactive selection is implemented via a semi-transparent form overlay. Window capture requires exact window title match.
 
 ```js
-const { captureWindows } = require('screenshot-utils');
+import { captureWindows } from 'cross-capture';
 
 // Interactive region selection
 const region = await captureWindows();
