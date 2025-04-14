@@ -30,15 +30,15 @@ export const createResponse = ({
 }): CaptureOptions => {
 
   if (code === 0 && fs.existsSync(tempFile)) {
-    return { type: 'data', data: toBase64(tempFile, options) };
+    return { status: 'success', type: 'data', data: toBase64(tempFile, options) };
   }
 
   if (code === 0 && !fs.existsSync(tempFile)) {
-    return { type: 'canceled' };
+    return { status: 'canceled' };
   }
 
   return {
-    type: 'error',
+    status: 'error',
     error: new Error(`${command} failed` + (code ? ` with code ${code}` : ''))
   };
 };

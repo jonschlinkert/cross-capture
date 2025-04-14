@@ -7,17 +7,14 @@ import { captureLinux } from './platform/linux';
 export const capture = async (options: CaptureOptions = {}): Promise<any> => {
   try {
     switch (os.platform()) {
-      case 'darwin':
-        return captureDarwin(options);
-      case 'win32':
-        return captureWindows(options);
-      case 'linux':
-        return captureLinux(options);
+      case 'darwin': return captureDarwin(options);
+      case 'win32': return captureWindows(options);
+      case 'linux': return captureLinux(options);
       default: {
         throw new Error(`Unsupported platform: ${os.platform()}`);
       }
     }
   } catch (error) {
-    return { type: 'error', error };
+    return { status: 'error', error };
   }
 };
